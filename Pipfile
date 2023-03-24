@@ -93,6 +93,7 @@ vine = "==5.0.0"
 watchdog = "==2.2.1"
 wcwidth = "==0.2.6"
 whitenoise = "==6.3.0"
+braintree = "*"
 
 [dev-packages]
 black = "*"

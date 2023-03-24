@@ -5,6 +5,7 @@ async-timeout==4.0.2
 attrs==22.2.0
 billiard==3.6.4.0
 black==22.12.0
+braintree==4.18.1
 celery==5.2.7
 certifi==2022.12.7
 cffi==1.15.1

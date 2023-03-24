@@ -7,6 +7,7 @@ urlpatterns = [
     path("supersecret/", admin.site.urls),
     path("api/auth/", include("djoser.urls")),
     path("api/auth/", include("djoser.urls.jwt")),
+    path("api/profile/", include("apps.profiles.urls")),
 ]
 
 admin.site.site_header = "Shop Eline Admin"
