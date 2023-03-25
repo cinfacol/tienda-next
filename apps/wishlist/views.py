@@ -1,9 +1,10 @@
-from cart.models import Cart, CartItem
-from products.models import Product
-from products.serializers import ProductSerializer
+from apps.products.models import Product
+from apps.products.serializers import ProductSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.cart.models import Cart, CartItem
 
 from .models import WishList, WishListItem
 
