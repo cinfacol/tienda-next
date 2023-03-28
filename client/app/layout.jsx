@@ -1,6 +1,6 @@
 import './globals.css';
 import { Providers } from './redux/provider';
-import Head from '@/components/head';
+// import Head from '@/components/head';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 

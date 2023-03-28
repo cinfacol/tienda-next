@@ -1,8 +1,11 @@
 "use client";
 
-import { Fragment, useEffect, useState } from 'react';
-import { useDispatch, useSelelector } from 'react-redux';
+import { Fragment, useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import { Popover, Transition, Menu } from '@headlessui/react';
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import {
   Bars3Icon,
   ChartBarIcon,
@@ -19,6 +22,7 @@ import {
   ChevronDownIcon,
   HeartIcon
 } from '@heroicons/react/24/solid';
+import { logout, reset } from '@/app/redux/features/auth/authSlice';
 import Link from "next/link";
 import Search from "./search";
 import Image from "next/image";
@@ -72,23 +76,41 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-const Navbar = () => {
+export default function Navbar() {
   const dispatch = useDispatch();
+  const navigate = useRouter();
 
-  const user = false;
+  const isLogged = useSelector((state) => state.auth.isLoggedIn);
 
-  const isLogged = true;
+  // eslint-disable-next-line no-unused-vars
+  const [log, setLog] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const logoutHandler = () => {
+		dispatch(logout());
+		dispatch(reset());
+		navigate.push("/");
+	};
+
+  useEffect(() => {
+    if (isLogged) {
+        setLog(true);
+        window.scrollTo(0, 0);
+    }
+  }, [isLogged])
 
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-            <img
+            <Image
               className="h-full w-full rounded-full"
               // src={user && user.profile_photo}
               src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-              alt=""
+              alt="photo"
+              width={400}
+              height={400}
             />
           </span>
         </Menu.Button>
@@ -108,7 +130,7 @@ const Navbar = () => {
             <Menu.Item>
               {({ active }) => (
                 <Link
-                  href="/"
+                  href="/profile"
                   className={classNames(
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                     'block px-4 py-2 text-sm'
@@ -118,8 +140,7 @@ const Navbar = () => {
                 </Link>
               )}
             </Menu.Item>
-            {/* <form onSubmit={logoutHandler} method="POST"> */}
-            <form method="POST">
+            <form onSubmit={logoutHandler} method="POST">
               <Menu.Item>
                 {({ active }) => (
                   <button
@@ -146,11 +167,13 @@ const Navbar = () => {
       <div>
         <Menu.Button className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-            <img
+            <Image
               className="h-full w-full rounded-full"
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKNFcHih9B4u-dmadzY41EHOXwMJ8Dyhn5bw&usqp=CAU"
               // src="http://localhost:8000/mediafiles/profile_default.png"
-              alt=""
+              alt="avatar"
+              width={400}
+              height={400}
             />
           </span>
         </Menu.Button>
@@ -170,7 +193,7 @@ const Navbar = () => {
             <Menu.Item>
               {({ active }) => (
                 <Link
-                  href="/"
+                  href="/login"
                   className={classNames(
                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                     'block px-4 py-2 text-sm'
@@ -211,10 +234,12 @@ const Navbar = () => {
               <div>
                 <Link href='/' className="flex">
                   <span className="sr-only">Workflow</span>
-                  <img
+                  <Image
                     className="h-8 w-auto sm:h-10"
                     src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                    alt=""
+                    alt="Logo"
+                    width={400}
+                    height={400}
                   />
                 </Link>
               </div>
@@ -223,8 +248,7 @@ const Navbar = () => {
               <div className='md:hidden ml-14'>
                 <div className='flex items-center justify-between space-x-3'>
                   <div>
-                    {/* {(user || isLogged) ? user && user.first_name : 'Invitado'} */}
-                    {(user || isLogged) ? 'Jorge' : 'Invitado'}
+                    {(user || isLogged) ? user && user.first_name : 'Invitado'}
                   </div>
                   {user ? authLinks : guestLinks }
                   <div className='mt-5'>
@@ -403,7 +427,13 @@ const Navbar = () => {
                                     <li key={post.id} className="flow-root">
                                       <Link href={post.href} className="-m-3 p-3 flex rounded-lg hover:bg-gray-100">
                                         <div className="hidden sm:block flex-shrink-0">
-                                          <img className="w-32 h-20 object-cover rounded-md" src={post.imageUrl} alt="" />
+                                          <Image
+                                            className="w-32 h-20 object-cover rounded-md"
+                                            src={post.imageUrl}
+                                            alt="photo"
+                                            width={400}
+                                            height={400}
+                                          />
                                         </div>
                                         <div className="w-0 flex-1 sm:ml-8">
                                           <h4 className="text-base font-medium text-gray-900 truncate">{post.name}</h4>
@@ -415,10 +445,10 @@ const Navbar = () => {
                                 </ul>
                               </div>
                               <div className="mt-6 text-sm font-medium">
-                                <a href="/" className="text-indigo-600 hover:text-indigo-500">
+                                <Link href="/" className="text-indigo-600 hover:text-indigo-500">
                                   {' '}
                                   View all posts <span aria-hidden="true">&rarr;</span>
-                                </a>
+                                </Link>
                               </div>
                             </div>
                           </div>
@@ -431,8 +461,7 @@ const Navbar = () => {
               <div className="flex items-center md:ml-12">
                 <div className='flex items-center md:mr-6 md:justify-between md:space-x-5'>
                   <div>
-                    {/* {(user || isLogged) ? user && user.first_name : 'Invitado'} */}
-                    {(user || isLogged) ? 'Jorge' : 'Invitado'}
+                    {(user || isLogged) ? user && user.first_name : 'Invitado'}
                   </div>
                   {(user || isLogged) ? authLinks : guestLinks }
                 </div>
@@ -469,10 +498,12 @@ const Navbar = () => {
               <div className="pt-5 pb-6 px-5 sm:pb-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <img
+                    <Image
                       className="h-8 w-auto"
                       src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
                       alt="Workflow"
+                      width={400}
+                      height={400}
                     />
                   </div>
                   <div className="-mr-2">
@@ -527,5 +558,3 @@ const Navbar = () => {
     </>
   );
 };
-
-export default Navbar;
