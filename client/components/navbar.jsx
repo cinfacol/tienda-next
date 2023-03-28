@@ -26,6 +26,7 @@ import { logout, reset } from '@/app/redux/features/auth/authSlice';
 import Link from "next/link";
 import Search from "./search";
 import Image from "next/image";
+import { getUser } from '@/app/redux/features/auth/authService';
 
 const solutions = [
   {
@@ -81,10 +82,12 @@ export default function Navbar() {
   const navigate = useRouter();
 
   const isLogged = useSelector((state) => state.auth.isLoggedIn);
+  const user = useSelector((state) => state.auth.user);
+  const access = localStorage.getItem('access');
 
   // eslint-disable-next-line no-unused-vars
-  const [log, setLog] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user'));
+  // const [log, setLog] = useState(false);
+  // const user = JSON.parse(localStorage.getItem('user'));
 
   const logoutHandler = () => {
 		dispatch(logout());
@@ -92,12 +95,18 @@ export default function Navbar() {
 		navigate.push("/");
 	};
 
+  // useEffect(() => {
+  //   if (isLogged) {
+  //       setLog(true);
+  //       window.scrollTo(0, 0);
+  //   }
+  // }, [isLogged]);
+
   useEffect(() => {
-    if (isLogged) {
-        setLog(true);
-        window.scrollTo(0, 0);
+    if (access && !isLogged) {
+        dispatch(getUser());
     }
-  }, [isLogged])
+  }, []);
 
   const authLinks = (
     <Menu as="div" className="relative inline-block text-left">
