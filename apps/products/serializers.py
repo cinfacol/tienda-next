@@ -1,6 +1,19 @@
 from rest_framework import serializers
 
+from apps.reviews.models import Review
+
 from .models import Product, ProductViews
+
+
+class ReviewsProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = [
+            "id",
+            "rating",
+            "comment",
+            "date_created",
+        ]
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -11,6 +24,11 @@ class ProductSerializer(serializers.ModelSerializer):
     photo2 = serializers.SerializerMethodField()
     photo3 = serializers.SerializerMethodField()
     photo4 = serializers.SerializerMethodField()
+    reviews = ReviewsProductSerializer(
+        many=True,
+        read_only=True,
+        source="product_review",
+    )
 
     class Meta:
         model = Product
@@ -37,6 +55,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "photo4",
             "published_status",
             "views",
+            "reviews",
         ]
 
     def get_user(self, obj):

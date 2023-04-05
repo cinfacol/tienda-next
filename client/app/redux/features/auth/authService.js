@@ -3,7 +3,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL ='http://localhost:8000/api/';
+// const API_URL ='http://localhost:8000/api/';
 
 export const register = createAsyncThunk(
 	"auth/register",
@@ -23,7 +23,7 @@ export const register = createAsyncThunk(
 		});
 
 		try {
-			const response = await axios.post(`${API_URL}auth/users`, body, config );
+			const response = await axios.post(`${process.env.API_URL}/api/auth/users`, body, config );
 
 			if (response.status === 201) {
 				return response.data;
@@ -55,7 +55,7 @@ export const getUser = createAsyncThunk(
 			};
 
 			try {
-				const response = await axios.get(`${API_URL}auth/users/me/`, config );
+				const response = await axios.get(`${process.env.API_URL}/api/auth/users/me/`, config );
 				if (response.status === 200) {
 					localStorage.setItem('user', JSON.stringify(response.data));
 					return response.data;
@@ -88,9 +88,8 @@ export const login = createAsyncThunk(
 			email,
 			password,
 		});
-		console.log('process_env', process.env.HOST);
 		try {
-			const response = await axios.post(`${API_URL}auth/jwt/create/`, body, config );
+			const response = await axios.post(`${process.env.API_URL}/api/auth/jwt/create/`, body, config );
 
 			if (response.status === 200) {
 				localStorage.setItem('access', response.data.access);
@@ -123,7 +122,7 @@ export const activate = createAsyncThunk(
 			}
 		};
 		try {
-			const response = await axios.post(`${API_URL}auth/users/activation/`, userData, config);
+			const response = await axios.post(`${process.env.API_URL}/api/auth/users/activation/`, userData, config);
 			if (response.status === 204) {
         return response.data;
       } else {
@@ -151,7 +150,7 @@ export const reset_password = createAsyncThunk(
 			}
 		};
 		try {
-			const response = await axios.post(`${API_URL}auth/users/reset_password/`, { email }, config);
+			const response = await axios.post(`${process.env.API_URL}/api/auth/users/reset_password/`, { email }, config);
 			if (response.status === 204) {
 				return response.data
 			} else {
@@ -179,7 +178,7 @@ export const reset_password_confirm = createAsyncThunk(
       }
     };
 		try {
-			const response = await axios.post(`${API_URL}auth/users/reset_password_confirm/`, { uid, token, new_password, re_new_password, }, config);
+			const response = await axios.post(`${process.env.API_URL}/api/auth/users/reset_password_confirm/`, { uid, token, new_password, re_new_password, }, config);
 			if (response.status === 204) {
 				return response.data
 			} else {

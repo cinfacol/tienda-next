@@ -1,10 +1,8 @@
 "use client";
 
-import { useSelector, useDispatch } from "react-redux";
 import Banner from "@/components/banner";
 
 export default function Home() {
-  const dispatch = useDispatch();
   return (
     <>
       <Banner />

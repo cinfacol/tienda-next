@@ -1,14 +1,21 @@
-export const metadata = {
-  title: 'Products | Shop Eline Next App',
-  description: 'Products en Next App de Shop Eline',
-}
+"use client";
+
+import { useEffect } from "react";
+import { getProducts } from "../redux/features/products/productsService";
+import { useDispatch, useSelector } from "react-redux";
+import ListProducts from "@/components/products/listProducts";
 
 const Products = () => {
-  return (
-    <h1 className="text-3xl font-bold underline">
-      Products Page
-    </h1>
-  )
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getProducts())
+
+  }, [dispatch])
+
+  const data = useSelector((state) => state.products.products);
+
+  return <ListProducts data={data} />
 }
 
 export default Products
