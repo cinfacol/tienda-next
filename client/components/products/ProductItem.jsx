@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import StarRatings from "react-star-ratings";
@@ -5,9 +7,6 @@ import StarRatings from "react-star-ratings";
 const ProductItem = ({ product, reviews }) => {
   let valor = reviews.map((review) => review.rating);
   let rate = Number((valor.reduce((a, b) => Number(a) + Number(b), 0)/valor.length).toFixed(1));
-  console.log('items', valor.length);
-  console.log('valor', valor);
-  console.log('promedio_rating', rate);
   return (
     <article className="border border-gray-200 overflow-hidden bg-white shadow-sm rounded mb-5">
       <div className="flex flex-col md:flex-row">
@@ -34,7 +33,7 @@ const ProductItem = ({ product, reviews }) => {
         <div className="md:w-2/4">
           <div className="p-4">
             <Link
-              href={`/product/${product.id}`}
+              href={`/products/${product.id}`}
               className="hover:text-blue-600"
             >
               {product.title}
@@ -62,13 +61,13 @@ const ProductItem = ({ product, reviews }) => {
           </div>
         </div>
         <div className="md:w-1/4 border-t lg:border-t-0 lg:border-l border-gray-200">
-          <div className="p-5">
+          <div className="flex flex-col items-center p-5">
             <span className="text-xl font-semibold text-black">
               {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product?.price)}
             </span>
 
             <p className="text-green-500">Free Shipping</p>
-            <div className="my-3">
+            <div className="mt-5">
               <Link
                 href = {"/Cart "}
                 className="inline-flex items-center px-2 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

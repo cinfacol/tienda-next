@@ -24,7 +24,7 @@ import {
 } from '@heroicons/react/24/solid';
 import { logout, reset } from '@/app/redux/features/auth/authSlice';
 import Link from "next/link";
-import Search from "./search";
+import Search from './search';
 import Image from "next/image";
 import { getUser } from '@/app/redux/features/auth/authService';
 
@@ -280,7 +280,7 @@ export default function Navbar() {
 
             {/* div oculto para moviles Menu principal (Solutions, shop, Docs, Categories) */}
             <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
-              <Popover.Group as="nav" className="flex space-x-10">
+              <Popover.Group as="nav" className="flex space-x-10 md:items-center">
                 <Popover>
                   {({ open }) => (
                     <>
@@ -362,6 +362,7 @@ export default function Navbar() {
                 <Link href="/products" className="text-base font-medium text-gray-500 hover:text-gray-900">
                   Products
                 </Link>
+                <Search />
                 {/* {
                   (location.pathname !== '/search') ?
                   <SearchBox

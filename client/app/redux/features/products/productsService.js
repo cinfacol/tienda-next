@@ -87,7 +87,7 @@ export const get_product = createAsyncThunk(
       }
     };
     try {
-      const res = await axios.get(`${process.env.API_URL}/api/product/product/${productId}`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/${productId}/`, config);
       if (res.status === 200) {
 
         return res.data;

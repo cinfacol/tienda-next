@@ -7,11 +7,11 @@ urlpatterns = [
     path("agents/", views.ListAgentsProductsAPIView.as_view(), name="agent-products"),
     path("create/", views.create_product_api_view, name="product-create"),
     path(
-        "details/<slug:slug>/",
+        "<productId>/",
         views.ProductDetailView.as_view(),
-        name="product-details",
+        name="product-id",
     ),
-    path("update/<slug:slug>/", views.update_product_api_view, name="update-product"),
-    path("delete/<slug:slug>/", views.delete_product_api_view, name="delete-product"),
+    path("update/<productId>/", views.update_product_api_view, name="update-product"),
+    path("delete/<productId>/", views.delete_product_api_view, name="delete-product"),
     path("search/", views.ProductSearchAPIView.as_view(), name="product-search"),
 ]
