@@ -3,9 +3,9 @@
 import { useEffect } from "react";
 import { getProducts } from "../redux/features/products/productsService";
 import { useDispatch, useSelector } from "react-redux";
-import ListProducts from "@/components/products/listProducts";
+import ListProducts from "@/components/products/ListProducts";
 
-const Products = () => {
+export default function Products() {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,5 +17,3 @@ const Products = () => {
 
   return <ListProducts data={data} />
 }
-
-export default Products

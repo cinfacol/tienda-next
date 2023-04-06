@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 const Search = () => {
   return (
     <form className="flex flex-nowrap items-center w-full order-last md:order-none mt-5 md:mt-0 md:w-2/4 lg:w-2/4">

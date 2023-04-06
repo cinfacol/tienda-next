@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import Filters from "../layouts/Filters";
 import StarRatings from "react-star-ratings";
 
 const ProductItem = ({ product, reviews }) => {
@@ -23,7 +22,7 @@ const ProductItem = ({ product, reviews }) => {
             <Image
               src={
                 product?.cover_photo
-                  ? product?.cover_photo
+                  ? product?.cover_photo.url
                   : "/images/default_product.png"
               }
               alt={product?.title}
@@ -51,11 +50,11 @@ const ProductItem = ({ product, reviews }) => {
                       starSpacing="1px"
                       name="rating"
                     />
-                    <p className="text-yellow-700">rating: {rate} de: {valor.length} reseñas</p>
+                    {/* <p className="text-yellow-700">rating: {rate} de: {valor.length} reseñas</p> */}
                 </div>
               </div>
               <b className="text-gray-300">•</b>
-              <span className="ml-1 text-yellow-500">{product?.ratings}</span>
+              <span className="ml-1 text-yellow-500">{rate} de {valor.length}</span>
             </div>
             <p className="text-gray-500 mb-2">
               {product?.description.substring(0, 150)}...
@@ -70,10 +69,12 @@ const ProductItem = ({ product, reviews }) => {
 
             <p className="text-green-500">Free Shipping</p>
             <div className="my-3">
-              <a className="px-4 py-2 inline-block text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 cursor-pointer">
-                {" "}
-                Add to Cart{" "}
-              </a>
+              <Link
+                href = {"/Cart "}
+                className="inline-flex items-center px-2 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Add to Cart
+              </Link>
             </div>
           </div>
         </div>
