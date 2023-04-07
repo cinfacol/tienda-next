@@ -51,7 +51,7 @@ export default function Login () {
 		}
 
 		dispatch(reset());
-	}, [isError, isSuccess, message, isLogged, Navigate, dispatch]);
+	}, [isError, isSuccess, message, isLogged, Navigate]);
 
 	const submitHandler = (formValue) => {
 		const {

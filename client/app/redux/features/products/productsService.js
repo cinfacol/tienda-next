@@ -3,7 +3,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const getProducts = createAsyncThunk(
+export const GetProducts = createAsyncThunk(
   'products/get_products',
   async (arg, thunkAPI) => {
     const config = {
@@ -130,8 +130,8 @@ export const get_related_products = createAsyncThunk(
   }
 )
 
-export const get_filtered_products = createAsyncThunk(
-  'products/get_filtered_products',
+export const GetFilteredProducts = createAsyncThunk(
+  'products/GetFilteredProducts',
   async ({ category_id, price_range, sort_by, order }, thunkAPI) => {
     const config = {
       headers: {

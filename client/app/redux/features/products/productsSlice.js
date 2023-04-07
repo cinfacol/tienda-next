@@ -1,7 +1,7 @@
 "use client";
 
 import { createSlice } from '@reduxjs/toolkit';
-import { getProducts, get_product, get_search_products, get_filtered_products } from './productsService';
+import { GetProducts, get_product, get_search_products, GetFilteredProducts } from './productsService';
 
 const initialState = {
   products: null,
@@ -17,14 +17,14 @@ export const productsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-    .addCase(getProducts.pending, (state) => {
+    .addCase(GetProducts.pending, (state) => {
       state.status = 'pending';
     })
-    .addCase(getProducts.fulfilled, (state, action) => {
+    .addCase(GetProducts.fulfilled, (state, action) => {
       state.status = 'idle';
       state.products = action.payload.results;
     })
-    .addCase(getProducts.rejected, (state, action) => {
+    .addCase(GetProducts.rejected, (state, action) => {
       state.status = 'idle';
       state.error = action.error.message
     })
@@ -40,15 +40,15 @@ export const productsSlice = createSlice({
       state.status = 'idle';
       // state.error = action.error.message
     })
-    .addCase(get_filtered_products.pending, (state) => {
+    .addCase(GetFilteredProducts.pending, (state) => {
       state.status = 'pending';
     })
-    .addCase(get_filtered_products.fulfilled, (state, action) => {
+    .addCase(GetFilteredProducts.fulfilled, (state, action) => {
       state.status = 'idle';
       state.filtered_products = action.payload.filtered_products;
       state.error = action.payload.error;
     })
-    .addCase(get_filtered_products.rejected, (state, action) => {
+    .addCase(GetFilteredProducts.rejected, (state, action) => {
       state.status = 'idle';
       // state.error = action.error.message
     })

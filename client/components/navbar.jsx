@@ -112,7 +112,7 @@ export default function Navbar() {
   useEffect(() => {
     dispatch(getCategories())
 
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     if (access && !isLogged) {
@@ -368,7 +368,7 @@ export default function Navbar() {
                     </>
                   )}
                 </Popover>
-                <Link href='/' className="text-base font-medium text-gray-500 hover:text-gray-900">
+                <Link href='/shop' className="text-base font-medium text-gray-500 hover:text-gray-900">
                   Shop
                 </Link>
                 <Link href="/products" className="text-base font-medium text-gray-500 hover:text-gray-900">

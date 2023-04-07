@@ -21,7 +21,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     dispatch(get_product(productId));
 
-  }, [dispatch]);
+  }, []);
   return (
     <ProductDetails product = {product_data} />
   )
