@@ -97,26 +97,6 @@ class Product(TimeStampedUUIDModel):
         null=True,
         blank=True,
     )
-    photo1 = models.ImageField(
-        default="/product_sample.jpg",
-        null=True,
-        blank=True,
-    )
-    photo2 = models.ImageField(
-        default="/product_sample.jpg",
-        null=True,
-        blank=True,
-    )
-    photo3 = models.ImageField(
-        default="/product_sample.jpg",
-        null=True,
-        blank=True,
-    )
-    photo4 = models.ImageField(
-        default="/product_sample.jpg",
-        null=True,
-        blank=True,
-    )
     published_status = models.BooleanField(
         verbose_name=_("Published Status"), default=False
     )
@@ -165,3 +145,30 @@ class ProductViews(TimeStampedUUIDModel):
         verbose_name_plural = "Total Product Views"
         """_summary_
         """
+
+
+class ImgProduct(TimeStampedUUIDModel):
+    name = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="img/%Y/%m")
+    alt_text = models.CharField(max_length=255)
+    Product = models.ForeignKey(
+        Product,
+        blank=True,
+        null=True,
+        related_name="prod_image",
+        on_delete=models.CASCADE,
+    )
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def get_thumbnail(self):
+        if self.image:
+            return self.image.url
+        return ""
+
+    class Meta:
+        verbose_name = "product image"
+        verbose_name_plural = "product images"
+        ordering = ("created_at",)
+
+    def __str__(self):
+        return self.alt_text

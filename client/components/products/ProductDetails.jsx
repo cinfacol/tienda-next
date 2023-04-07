@@ -1,34 +1,16 @@
-"use client";
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react'
+import StarRatings from 'react-star-ratings';
 
-import StarRatings from "react-star-ratings";
-import { useDispatch, useSelector } from "react-redux";
-import { get_product } from "@/app/redux/features/products/productsService";
-import { useEffect } from "react";
-import { usePathname } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
+const ProductDetails = ({ product }) => {
+  const ratings = product?.reviews.map((review) => {return review.rating});
 
-export const ProductDetails = () => {
-  const dispatch = useDispatch();
-  const pathname = usePathname();
-  const productId = pathname.split('/')[2];
+  const rating = Number((ratings?.reduce((a, b) => Number(a) + Number(b), 0)/ratings?.length).toFixed(1));
 
+  const inStock = product?.quantity >= 1
 
-
-  const product = useSelector((state) => state.products.product);
-  const rating = Number(product?.reviews[0].rating);
-  // const rating = 3
-
-  let reviews = product?.reviews;
-
-  let valor = reviews?.map((review) => review.rating);
-  let rate = Number((valor?.reduce((a, b) => Number(a) + Number(b), 0)/valor?.length).toFixed(1));
-
-  useEffect(() => {
-    dispatch(get_product(productId));
-
-  }, [dispatch]);
-
+  console.log('imagenes', product?.images?.map(img => img.image));
 
   return (
     <section className="bg-white py-10">
@@ -38,22 +20,24 @@ export const ProductDetails = () => {
             <div className="border border-gray-200 shadow-sm p-3 text-center rounded mb-5">
               <Image
                 className="object-cover inline-block"
-                src={product?.cover_photo.url}
+                src={product?.cover_photo ? product?.cover_photo.url : '/images/default_product.png'}
                 alt={product?.title}
                 width="340"
                 height="340"
               />
             </div>
             <div className="space-x-2 overflow-auto text-center whitespace-nowrap">
-              <Link href='/' className="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500 cursor-pointer">
-                <Image
-                  className="w-14 h-14"
-                  src={product?.cover_photo.url}
-                  alt={product?.title}
-                  width="500"
-                  height="500"
-                />
-              </Link>
+              {product?.images?.map(img => (
+                <a key={img.id} className="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500 cursor-pointer">
+                  <Image
+                    className="w-14 h-14"
+                    src={img.image ? img.image.url : '/images/default_product.png'}
+                    alt={img.name}
+                    width="500"
+                    height="500"
+                  />
+                </a>
+              ))}
             </div>
           </aside>
           <main>
@@ -62,7 +46,7 @@ export const ProductDetails = () => {
             <div className="flex flex-wrap items-center space-x-2 mb-2">
               <div className="ratings">
                 <StarRatings
-                  rating={rate}
+                  rating={rating}
                   starRatedColor="#ffb829"
                   numberOfStars={5}
                   starDimension="20px"
@@ -70,7 +54,7 @@ export const ProductDetails = () => {
                   name="rating"
                 />
               </div>
-              <span className="text-yellow-500">{rate} de {valor?.length}</span>
+              <span className="text-yellow-500">{rating} de {ratings?.length}</span>
 
               <svg
                 width="6px"
@@ -103,11 +87,15 @@ export const ProductDetails = () => {
               <li className="mb-1">
                 {" "}
                 <b className="font-medium w-36 inline-block">Stock</b>
+                {inStock ?
+                  <span className="text-green-500">In Stock</span> :
+                  <span className="text-red-500">Out of Stock</span>
+                }
               </li>
               <li className="mb-1">
                 {" "}
                 <b className="font-medium w-36 inline-block">Category:</b>
-                <span className="text-gray-500">Electonics</span>
+                <span className="text-gray-500">{product?.category}</span>
               </li>
               <li className="mb-1">
                 {" "}
@@ -133,3 +121,5 @@ export const ProductDetails = () => {
     </section>
   )
 }
+
+export default ProductDetails
