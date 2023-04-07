@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Popover, Transition, Menu } from '@headlessui/react';
+import { getCategories } from '@/app/redux/features/categories/categoriesService';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import {
@@ -83,7 +84,13 @@ export default function Navbar() {
 
   const isLogged = useSelector((state) => state.auth.isLoggedIn);
   const user = useSelector((state) => state.auth.user);
+  const categorias = useSelector((state) => state.categories.categories);
   const access = localStorage.getItem('access');
+
+  // const subCategories = categorias?.map(categoria => categoria.sub_categories.map(sub_category => sub_category.name));
+  // const parentCategories = categorias?.map(categoria => categoria.name);
+  // console.log('categorias_hijas', subCategories);
+  // console.log('categorias_padres', parentCategories);
 
   // eslint-disable-next-line no-unused-vars
   // const [log, setLog] = useState(false);
@@ -101,6 +108,11 @@ export default function Navbar() {
   //       window.scrollTo(0, 0);
   //   }
   // }, [isLogged]);
+
+  useEffect(() => {
+    dispatch(getCategories())
+
+  }, [dispatch])
 
   useEffect(() => {
     if (access && !isLogged) {
@@ -278,7 +290,7 @@ export default function Navbar() {
               </Popover.Button>
             </div>
 
-            {/* div oculto para moviles Menu principal (Solutions, shop, Docs, Categories) */}
+            {/* div oculto para moviles Menu principal (Solutions, shop, Products, Categorias) */}
             <div className="hidden md:flex-1 md:flex md:items-center md:justify-between">
               <Popover.Group as="nav" className="flex space-x-10 md:items-center">
                 <Popover>
@@ -407,25 +419,24 @@ export default function Navbar() {
                           </div>
                           <div className="relative max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2">
                             <nav className="grid gap-y-10 px-4 py-8 bg-white sm:grid-cols-2 sm:gap-x-8 sm:py-12 sm:px-6 lg:px-8 xl:pr-12">
-                              {/* {(categorias && (categorias.length > 0)) && (categorias.map((item) => (
-                                  <div key={item.id}>
-                                    <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">{(item.sub_categories.length > 0) && item.name}</h3>
-                                    <ul className="mt-5 space-y-6">
-                                      {item.sub_categories && item.sub_categories.map((sub_item) => (
-                                        <li key={sub_item.id} className="flow-root">
-                                          <Link
-                                            href="/"
-                                            className="-m-3 p-3 flex items-center rounded-md text-base font-medium text-gray-900 hover:bg-gray-50"
-                                          >
-                                            <CheckCircleIcon className="flex-shrink-0 h-6 w-6 text-gray-400" aria-hidden="true" />
-                                            <span className="ml-4 text-small">{sub_item.name}</span>
-
-                                          </Link>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )))} */}
+                              {(categorias?.length > 0) && (categorias?.map((item) => (
+                                <div key={item.id}>
+                                  <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">{(item.sub_categories.length > 0) && item.name}</h3>
+                                  <ul className="mt-5 space-y-6">
+                                    {item?.sub_categories?.map((sub_item) => (
+                                      <li key={sub_item.id} className="flow-root">
+                                        <Link
+                                          href="/"
+                                          className="-m-3 p-3 flex items-center rounded-md text-base font-medium text-gray-900 hover:bg-gray-50"
+                                        >
+                                          <CheckCircleIcon className="flex-shrink-0 h-6 w-6 text-gray-400" aria-hidden="true" />
+                                          <span className="ml-4 text-small">{sub_item.name}</span>
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )))}
                             </nav>
                             <div className="bg-gray-50 px-4 py-8 sm:py-12 sm:px-6 lg:px-8 xl:pl-12">
                               <div>
@@ -490,6 +501,7 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* popover.panel visible solo moviles al dar click en el logo menu (las 3 rayitas) Shop, Products, Resources, Contact Sales */}
         <Transition
           as={Fragment}
           enter="duration-200 ease-out"
@@ -499,7 +511,6 @@ export default function Navbar() {
           leaveFrom="opacity-100 scale-100"
           leaveTo="opacity-0 scale-95"
         >
-          {/* popover.panel visible solo moviles al dar click en el logo menu (las 3 rayitas) Shop, Docs, Categorías, Resources, Blog, Contact Sales */}
           <Popover.Panel
             focus
             className="absolute z-30 top-0 inset-x-0 p-2 transition transform origin-top-right md:hidden"
@@ -508,13 +519,16 @@ export default function Navbar() {
               <div className="pt-5 pb-6 px-5 sm:pb-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Image
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                      alt="Workflow"
-                      width={400}
-                      height={400}
-                    />
+                    <Link href='/' className="flex">
+                      <span className="sr-only">Workflow</span>
+                      <Image
+                        className="h-8 w-auto sm:h-10"
+                        src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+                        alt="Logo"
+                        width={400}
+                        height={400}
+                      />
+                    </Link>
                   </div>
                   <div className="-mr-2">
                     <Popover.Button className="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
@@ -540,7 +554,7 @@ export default function Navbar() {
                       ))}
                     </div>
                     <div className="mt-8 text-base">
-                      <Link href="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+                      <Link href="/products" className="font-medium text-indigo-600 hover:text-indigo-500">
                         {' '}
                         View all products <span aria-hidden="true">&rarr;</span>
                       </Link>
@@ -550,11 +564,11 @@ export default function Navbar() {
               </div>
               <div className="py-6 px-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <Link href='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
+                  <Link href='/shop' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
                     Shop
                   </Link>
-                  <Link href='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
-                    Categorías
+                  <Link href='/products' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
+                    Products
                   </Link>
                   <Link href='/' className="rounded-md text-base font-medium text-gray-900 hover:text-gray-700">
                     Contact Sales

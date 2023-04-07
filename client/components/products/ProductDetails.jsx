@@ -15,7 +15,7 @@ const ProductDetails = ({ product }) => {
     imgRef.current.src = url
   }
 
-  const inStock = product?.quantity >= 1
+  const stock = product?.quantity >= 1
 
   const breadCrumbs = [
     { name: "Home", url: "/" },
@@ -105,22 +105,22 @@ const ProductDetails = ({ product }) => {
                 <li className="mb-1">
                   {" "}
                   <b className="font-medium w-36 inline-block">Stock</b>
-                  {inStock ?
+                  {stock ?
                     <span className="text-green-500">In Stock</span> :
                     <span className="text-red-500">Out of Stock</span>
                   }
                 </li>
                 <li className="mb-1">
                   {" "}
-                  <b className="font-medium w-36 inline-block">Category:</b>
-                  <span className="text-gray-500">{product?.category}</span>
+                  <b className="font-medium w-36 inline-block">Type:</b>
+                  <span className="text-gray-500">{product?.product_type}</span>
                 </li>
                 <li className="mb-1">
                   {" "}
                   <b className="font-medium w-36 inline-block">
                     Seller / Brand:
                   </b>
-                  <span className="text-gray-500">Apple</span>
+                  <span className="text-gray-500">Samsung</span>
                 </li>
               </ul>
             </main>
