@@ -30,7 +30,6 @@ class ImgProductSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
-    cover_photo = serializers.SerializerMethodField()
     profile_photo = serializers.SerializerMethodField()
     reviews = ReviewsProductSerializer(
         many=True,

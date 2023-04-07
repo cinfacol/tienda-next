@@ -18,10 +18,10 @@ const ProductItem = ({ product, reviews }) => {
               position: "relative",
             }}
           >
-            <Image
+            <img
               src={
                 product?.cover_photo
-                  ? product?.cover_photo.url
+                  ? product?.cover_photo
                   : "/images/default_product.png"
               }
               alt={product?.title}

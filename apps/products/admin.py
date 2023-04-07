@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
-from .models import Product, ProductViews, ImgProduct
+from .models import ImgProduct, Product, ProductViews
 
 
 class ImgProductAdmin(admin.TabularInline):
@@ -8,9 +9,14 @@ class ImgProductAdmin(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "advert_type", "product_type"]
+    list_display = ["title", "advert_type", "product_type", "cover_photo"]
     list_filter = ["advert_type", "product_type"]
     inlines = [ImgProductAdmin]
+
+    def cover_photo(self, obj):
+        return format_html(
+            '<img src={} width="130" height="100" />', obj.cover_photo.url
+        )
 
 
 admin.site.register(Product, ProductAdmin)

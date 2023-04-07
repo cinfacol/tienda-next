@@ -92,6 +92,7 @@ class Product(TimeStampedUUIDModel):
     )
 
     cover_photo = models.ImageField(
+        upload_to="img/%Y/%m",
         verbose_name=_("Main Photo"),
         default="/product_sample.jpg",
         null=True,

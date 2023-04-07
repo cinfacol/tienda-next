@@ -10,17 +10,15 @@ const ProductDetails = ({ product }) => {
 
   const inStock = product?.quantity >= 1
 
-  console.log('imagenes', product?.images?.map(img => img.image));
-
   return (
     <section className="bg-white py-10">
       <div className="container max-w-screen-xl mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-5">
           <aside>
             <div className="border border-gray-200 shadow-sm p-3 text-center rounded mb-5">
-              <Image
+              <img
                 className="object-cover inline-block"
-                src={product?.cover_photo ? product?.cover_photo.url : '/images/default_product.png'}
+                src={product?.cover_photo || '/images/default_product.png'}
                 alt={product?.title}
                 width="340"
                 height="340"
@@ -29,9 +27,9 @@ const ProductDetails = ({ product }) => {
             <div className="space-x-2 overflow-auto text-center whitespace-nowrap">
               {product?.images?.map(img => (
                 <a key={img.id} className="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500 cursor-pointer">
-                  <Image
+                  <img
                     className="w-14 h-14"
-                    src={img.image ? img.image.url : '/images/default_product.png'}
+                    src={img.image || '/images/default_product.png'}
                     alt={img.name}
                     width="500"
                     height="500"
