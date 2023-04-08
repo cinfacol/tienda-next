@@ -10,6 +10,7 @@ import { XCircleIcon } from '@heroicons/react/24/outline';
 import { MinusSmallIcon, PlusSmallIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import ProductCard from '@/components/products/ProductCard';
 import { prices } from '@/helpers/fixedPrices';
+import BreadCrumbs from '@/components/layouts/BreadCrumbs';
 
 export default function Shop() {
 
@@ -101,9 +102,15 @@ export default function Shop() {
     return results
   }
 
+  const breadCrumbs = [
+    { name: "Home", url: "/" },
+    { name: "Shop", url: "/shop" },
+  ]
+
   return (
     <>
       <div className="bg-white">
+        <BreadCrumbs breadCrumbs = {breadCrumbs} />
         <div>
           {/* Mobile filter dialog - OCULTO PARA PC */}
           <Transition.Root show={mobileFiltersOpen} as={Fragment}>

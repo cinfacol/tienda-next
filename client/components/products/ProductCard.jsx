@@ -19,7 +19,9 @@ const ProductCard = ({ product }) => {
             </Link>
           </h3>
         </div>
-        <p className="text-sm font-medium text-gray-900">${product.price}</p>
+        <p className="text-sm font-medium text-gray-900">
+          {new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(product?.price)}
+        </p>
       </div>
     </div>
   )
