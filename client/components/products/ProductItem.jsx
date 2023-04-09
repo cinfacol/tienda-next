@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// import Image from "next/image";
 import Link from "next/link";
 import StarRatings from "react-star-ratings";
 
@@ -18,16 +18,18 @@ const ProductItem = ({ product, reviews }) => {
               position: "relative",
             }}
           >
-            <img
-              src={
-                product?.cover_photo
-                  ? product?.cover_photo
-                  : "/images/default_product.png"
-              }
-              alt={product?.title}
-              height="240"
-              width="240"
-            />
+            <Link href={`/products/${product.id}`}>
+              <img
+                src={
+                  product?.cover_photo
+                    ? product?.cover_photo
+                    : "/images/default_product.png"
+                }
+                alt={product?.title}
+                height="240"
+                width="240"
+              />
+            </Link>
           </div>
         </div>
         <div className="md:w-2/4">

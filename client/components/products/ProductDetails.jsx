@@ -64,7 +64,7 @@ const ProductDetails = ({ product }) => {
               <div className="flex flex-wrap items-center space-x-2 mb-2">
                 <div className="ratings">
                   <StarRatings
-                    rating={rating}
+                    rating={rating || 0}
                     starRatedColor="#ffb829"
                     numberOfStars={5}
                     starDimension="20px"
@@ -72,7 +72,7 @@ const ProductDetails = ({ product }) => {
                     name="rating"
                   />
                 </div>
-                <span className="text-yellow-500">{rating} de {ratings?.length}</span>
+                <span className="text-yellow-500">{rating || 0} de {ratings?.length}</span>
 
                 <svg
                   width="6px"

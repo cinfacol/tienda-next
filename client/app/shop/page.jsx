@@ -1,9 +1,6 @@
-
 "use client";
 
-import { GetProducts, GetFilteredProducts } from '../redux/features/products/productsService';
 import { Fragment, useState } from 'react';
-import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Dialog, Disclosure, Transition } from '@headlessui/react';
 import { XCircleIcon } from '@heroicons/react/24/outline';
@@ -16,11 +13,6 @@ export default function Shop() {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    dispatch(GetProducts());
-  }, [])
-
   const products = useSelector(state => state.products.products);
   const filtered_products = useSelector(state => state.products.filtered_products);
   const filtered_no_products = useSelector(state => state.products.error);
@@ -30,7 +22,7 @@ export default function Shop() {
 
   const [filtered, setFiltered] = useState(false);
   const [formData, setFormData] = useState({
-    category_id: '0',
+    category_id: 0,
     price_range: 'Any',
     sort_by: 'created',
     order: 'desc'
@@ -207,7 +199,6 @@ export default function Shop() {
                                   </div>
                                 )
                               })
-
                               return result
                             }
                           })
@@ -337,9 +328,9 @@ export default function Shop() {
           </Transition.Root>
 
           {/* OCULTO PARA MOBILES */}
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative z-10 flex items-baseline justify-between pt-24 pb-6 border-b border-gray-200">
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">Shop</h1>
+          <main className="max-w-7xl mx-auto px-4 sm:px-3 lg:px-8">
+            <div className="relative z-10 flex items-baseline justify-between pt-3 pb-6 border-b border-gray-200">
+              {/* <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">Shop</h1> */}
 
               <div className="flex items-center">
                 <button

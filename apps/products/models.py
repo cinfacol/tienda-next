@@ -1,5 +1,6 @@
 import random
 import string
+from datetime import datetime
 
 from autoslug import AutoSlugField
 from django.conf import settings
@@ -70,6 +71,7 @@ class Product(TimeStampedUUIDModel):
     price = models.DecimalField(
         verbose_name=_("Price"), max_digits=8, decimal_places=2, default=0.0
     )
+    sold = models.IntegerField(default=0)
     tax = models.DecimalField(
         verbose_name=_("Product Tax"),
         max_digits=6,
@@ -102,9 +104,14 @@ class Product(TimeStampedUUIDModel):
         verbose_name=_("Published Status"), default=False
     )
     views = models.IntegerField(verbose_name=_("Total Views"), default=0)
+    date_created = models.DateTimeField(default=datetime.now)
 
     objects = models.Manager()
     published = ProductPublishedManager()
+
+    def get_thumbnail(self):
+        if self.cover_photo:
+            return self.cover_photo.url
 
     def __str__(self):
         return self.title

@@ -12,9 +12,6 @@ const ProductDetailsPage = () => {
   const productId = pathname.split('/')[2];
 
   const productData = useSelector((state) => state.products.products);
-  /* const dataId = productData?.map((data_id) => {
-    return data_id.id;
-  }); */
 
   const product_data = productData?.find(({ id }) => id  === productId);
 

@@ -1,17 +1,31 @@
 from django.urls import path
 
-from . import views
+from .views import (
+    CreateProductAPIView,
+    DeleteProductAPIView,
+    ListAgentsProductsAPIView,
+    ListAllProductsAPIView,
+    ListRelatedAPIView,
+    ProductDetailView,
+    ProductSearchAPIView,
+    UpdateProductAPIView,
+)
 
 urlpatterns = [
-    path("all/", views.ListAllProductsAPIView.as_view(), name="all-products"),
-    path("agents/", views.ListAgentsProductsAPIView.as_view(), name="agent-products"),
-    path("create/", views.create_product_api_view, name="product-create"),
+    path("all/", ListAllProductsAPIView.as_view(), name="all-products"),
+    path("agents/", ListAgentsProductsAPIView.as_view(), name="agent-products"),
+    path("create/", CreateProductAPIView, name="product-create"),
     path(
         "<productId>/",
-        views.ProductDetailView.as_view(),
+        ProductDetailView.as_view(),
         name="product-id",
     ),
-    path("update/<productId>/", views.update_product_api_view, name="update-product"),
-    path("delete/<productId>/", views.delete_product_api_view, name="delete-product"),
-    path("search/", views.ProductSearchAPIView.as_view(), name="product-search"),
+    path(
+        "related/<productId>/",
+        ListRelatedAPIView.as_view(),
+        name="related-products",
+    ),
+    path("update/<productId>/", UpdateProductAPIView, name="update-product"),
+    path("delete/<productId>/", DeleteProductAPIView, name="delete-product"),
+    path("by/search/", ProductSearchAPIView.as_view(), name="product-search"),
 ]

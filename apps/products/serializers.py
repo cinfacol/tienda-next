@@ -53,6 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "product_number",
             "price",
             "tax",
+            "sold",
             "final_product_price",
             "advert_type",
             "product_type",

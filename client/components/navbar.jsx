@@ -1,12 +1,12 @@
 "use client";
 
-import { Fragment, useEffect, useState, useCallback } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { Popover, Transition, Menu } from '@headlessui/react';
 import { getCategories } from '@/app/redux/features/categories/categoriesService';
 import 'react-toastify/dist/ReactToastify.css';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import {
   Bars3Icon,
   ChartBarIcon,
@@ -28,6 +28,7 @@ import Link from "next/link";
 import Search from './search';
 import Image from "next/image";
 import { getUser } from '@/app/redux/features/auth/authService';
+import { GetProducts } from '@/app/redux/features/products/productsService';
 
 const solutions = [
   {
@@ -102,16 +103,13 @@ export default function Navbar() {
 		navigate.push("/");
 	};
 
-  // useEffect(() => {
-  //   if (isLogged) {
-  //       setLog(true);
-  //       window.scrollTo(0, 0);
-  //   }
-  // }, [isLogged]);
-
   useEffect(() => {
     dispatch(getCategories())
 
+  }, [])
+
+  useEffect(() => {
+    dispatch(GetProducts())
   }, [])
 
   useEffect(() => {
@@ -125,10 +123,10 @@ export default function Navbar() {
       <div>
         <Menu.Button className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-            <Image
+            <img
               className="h-full w-full rounded-full"
-              // src={user && user.profile_photo}
-              src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+              src={user && user.profile_photo}
+              // src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
               alt="photo"
               width={400}
               height={400}
@@ -188,10 +186,10 @@ export default function Navbar() {
       <div>
         <Menu.Button className="inline-flex justify-center w-full rounded-full  text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
           <span className="inline-block h-10 w-10 rounded-full overflow-hidden bg-gray-100">
-            <Image
+            <img
               className="h-full w-full rounded-full"
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKNFcHih9B4u-dmadzY41EHOXwMJ8Dyhn5bw&usqp=CAU"
-              // src="http://localhost:8000/mediafiles/profile_default.png"
+              // src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKNFcHih9B4u-dmadzY41EHOXwMJ8Dyhn5bw&usqp=CAU"
+              src="http://localhost:8000/mediafiles/profile_default.png"
               alt="avatar"
               width={400}
               height={400}

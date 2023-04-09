@@ -8,6 +8,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.categories.models import Category
+
 from .exceptions import ProductNotFound
 from .models import Product, ProductViews
 from .pagination import ProductPagination
@@ -52,6 +54,88 @@ class ListAllProductsAPIView(generics.ListAPIView):
     filterset_class = ProductFilter
     search_fields = ["category", "product_type"]
     ordering_fields = ["created_at"]
+
+
+class ListRelatedAPIView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all().order_by("-created_at")
+    pagination_class = ProductPagination
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    permission_classes = (permissions.AllowAny,)
+
+    filterset_class = ProductFilter
+    search_fields = ["category", "product_type"]
+    ordering_fields = ["created_at"]
+
+    def get(self, request, productId, format=None):
+        """try:
+            product_id = int(productId)
+        except:
+            return Response(
+                {"error": "Product ID must be an integer"},
+                status=status.HTTP_404_NOT_FOUND,
+            )"""
+
+        # Existe product id
+        if not Product.objects.filter(id=productId).exists():
+            return Response(
+                {"error": "Product with this product ID does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        category = Product.objects.get(id=productId).category
+
+        if Product.objects.filter(category=category).exists():
+            # Si la categoria tiene padre filtrar solo por la categoria y no el padre tambien
+            if category.parent:
+                related_products = Product.objects.order_by("-sold").filter(
+                    category=category
+                )
+            else:
+                if not Category.objects.filter(parent=category).exists():
+                    related_products = Product.objects.order_by("-sold").filter(
+                        category=category
+                    )
+
+                else:
+                    categories = Category.objects.filter(parent=category)
+                    filtered_categories = [category]
+
+                    for cat in categories:
+                        filtered_categories.append(cat)
+
+                    filtered_categories = tuple(filtered_categories)
+                    related_products = Product.objects.order_by("-sold").filter(
+                        category__in=filtered_categories
+                    )
+
+            # Excluir producto que estamos viendo
+            related_products = related_products.exclude(id=productId)
+            related_products = ProductSerializer(related_products, many=True)
+
+            if len(related_products.data) > 3:
+                return Response(
+                    {"related_products": related_products.data[:3]},
+                    status=status.HTTP_200_OK,
+                )
+            elif len(related_products.data) > 0:
+                return Response(
+                    {"related_products": related_products.data},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"error": "No related products found"}, status=status.HTTP_200_OK
+                )
+
+        else:
+            return Response(
+                {"error": "No related products found"}, status=status.HTTP_200_OK
+            )
 
 
 class ListAgentsProductsAPIView(generics.ListAPIView):
@@ -127,7 +211,7 @@ class ProductDetailView(APIView):
 
 @api_view(["PUT"])
 @permission_classes([permissions.IsAuthenticated])
-def update_product_api_view(request, slug):
+def UpdateProductAPIView(request, slug):
     try:
         product = Product.objects.get(slug=slug)
     except Product.DoesNotExist:
@@ -149,7 +233,7 @@ def update_product_api_view(request, slug):
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
-def create_product_api_view(request):
+def CreateProductAPIView(request):
     user = request.user
     data = request.data
     data["user"] = request.user.pkid
@@ -167,7 +251,7 @@ def create_product_api_view(request):
 
 @api_view(["DELETE"])
 @permission_classes([permissions.IsAuthenticated])
-def delete_product_api_view(request, slug):
+def DeleteProductAPIView(request, slug):
     try:
         product = Product.objects.get(slug=slug)
     except Product.DoesNotExist:
@@ -202,40 +286,110 @@ def uploadProductImage(request):
 
 class ProductSearchAPIView(APIView):
     permission_classes = [permissions.AllowAny]
-    serializer_class = ProductCreateSerializer
+    serializer_class = ProductViewSerializer
+    http_method_names = ["get", "post"]
 
-    def post(self, request):
-        queryset = Product.objects.filter(published_status=True)
+    def post(self, request, format=None):
+        product_results = Product.objects.filter(published_status=True)
         data = self.request.data
 
-        advert_type = data["advert_type"]
-        queryset = queryset.filter(advert_type__iexact=advert_type)
+        # advert_type = data["advert_type"]
+        # product_results = product_results.filter(advert_type__iexact=advert_type)
 
-        product_type = data["product_type"]
-        queryset = queryset.filter(product_type__iexact=product_type)
+        # product_type = data["product_type"]
+        # product_results = product_results.filter(product_type__iexact=product_type)
 
-        price = data["price"]
-        if price == "$0+":
-            price = 0
-        elif price == "$50,000+":
-            price = 50000
-        elif price == "$100,000+":
-            price = 100000
-        elif price == "$200,000+":
-            price = 200000
-        elif price == "$400,000+":
-            price = 400000
-        elif price == "$600,000+":
-            price = 600000
-        elif price == "Any":
-            price = -1
+        """ try:
+            category_id = int(data["category_id"])
+        except:
+            return Response(
+                {"error": "Category ID must be an integer"},
+                status=status.HTTP_404_NOT_FOUND,
+            ) """
 
-        if price != -1:
-            queryset = queryset.filter(price__gte=price)
+        category_id = data["category_id"]
 
-        catch_phrase = data["catch_phrase"]
-        queryset = queryset.filter(description__icontains=catch_phrase)
+        price_range = data["price_range"]
+        sort_by = data["sort_by"]
 
-        serializer = ProductSerializer(queryset, many=True)
+        if not (
+            sort_by == "date_created"
+            or sort_by == "price"
+            or sort_by == "sold"
+            or sort_by == "name"
+        ):
+            sort_by = "date_created"
 
-        return Response(serializer.data)
+        order = data["order"]
+
+        ## Si categoryID es = 0, filtrar todas las categorias
+        if category_id == 0:
+            product_results = Product.objects.all()
+        elif not Category.objects.filter(id=category_id).exists():
+            return Response(
+                {"error": "This category does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        else:
+            category = Category.objects.get(id=category_id)
+            if category.parent:
+                # Si la categoria tiene padre filtrar solo por la categoria y no el padre tambien
+                product_results = Product.objects.filter(category=category)
+            else:
+                if not Category.objects.filter(parent=category).exists():
+                    product_results = Product.objects.filter(category=category)
+                else:
+                    categories = Category.objects.filter(parent=category)
+                    filtered_categories = [category]
+
+                    for cat in categories:
+                        filtered_categories.append(cat)
+
+                    filtered_categories = tuple(filtered_categories)
+                    product_results = Product.objects.filter(
+                        category__in=filtered_categories
+                    )
+
+        # Filtrar por precio
+        if price_range == "1 - 19":
+            product_results = product_results.filter(price__gte=1)
+            product_results = product_results.filter(price__lt=20)
+        elif price_range == "20 - 39":
+            product_results = product_results.filter(price__gte=20)
+            product_results = product_results.filter(price__lt=40)
+        elif price_range == "40 - 59":
+            product_results = product_results.filter(price__gte=40)
+            product_results = product_results.filter(price__lt=60)
+        elif price_range == "60 - 79":
+            product_results = product_results.filter(price__gte=60)
+            product_results = product_results.filter(price__lt=80)
+        elif price_range == "More than 80":
+            product_results = product_results.filter(price__gte=80)
+
+        """ if price_range != -1:
+            queryset = queryset.filter(price__gte=price_range) """
+
+        # Filtrar producto por sort_by
+        if order == "desc":
+            sort_by = "-" + sort_by
+            product_results = product_results.order_by(sort_by)
+        elif order == "asc":
+            product_results = product_results.order_by(sort_by)
+        else:
+            product_results = product_results.order_by(sort_by)
+
+        product_results = ProductSerializer(product_results, many=True)
+
+        if len(product_results.data) > 0:
+            return Response(
+                {"filtered_products": product_results.data}, status=status.HTTP_200_OK
+            )
+        else:
+            return Response({"error": "No products found"}, status=status.HTTP_200_OK)
+
+        # catch_phrase = data["catch_phrase"]
+        # queryset = queryset.filter(description__icontains=catch_phrase)
+
+        # serializer = ProductSerializer(queryset, many=True)
+
+        # return Response(serializer.data)

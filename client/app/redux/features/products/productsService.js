@@ -28,8 +28,8 @@ export const GetProducts = createAsyncThunk(
   }
 )
 
-export const get_products_by_arrival = createAsyncThunk(
-  'products/get_products_by_arrival',
+export const GetProductsByArrival = createAsyncThunk(
+  'products/by_arrival',
   async (arg, thunkAPI) => {
     const config = {
       headers: {
@@ -37,7 +37,7 @@ export const get_products_by_arrival = createAsyncThunk(
       }
     };
     try {
-      const res = await axios.get(`/api/product/get-products?sortBy=date_created&order=desc&limit=3`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=sold&order=desc&limit=3`, config);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -89,7 +89,6 @@ export const get_product = createAsyncThunk(
     try {
       const res = await axios.get(`${process.env.API_URL}/api/products/${productId}/`, config);
       if (res.status === 200) {
-
         return res.data;
       } else {
         return thunkAPI.dispatch(Error);
@@ -135,12 +134,11 @@ export const GetFilteredProducts = createAsyncThunk(
   async ({ category_id, price_range, sort_by, order }, thunkAPI) => {
     const config = {
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
       }
     };
     try {
-      const res = await axios.post(`${process.env.API_URL}/api/product/by/search`, { category_id, price_range, sort_by, order }, config);
+      const res = await axios.post(`${process.env.API_URL}/api/products/by/search/`, { category_id, price_range, sort_by, order }, config);
       if (res.status === 200) {
         return res.data;
       } else {
