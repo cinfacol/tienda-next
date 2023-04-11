@@ -37,7 +37,7 @@ export const GetProductsByArrival = createAsyncThunk(
       }
     };
     try {
-      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=sold&order=desc&limit=3`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=date_created&order=desc&limit=3`, config);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -53,8 +53,8 @@ export const GetProductsByArrival = createAsyncThunk(
   }
 )
 
-export const get_products_by_sold = createAsyncThunk(
-  'products/get_products_by_sold',
+export const GetProductsBySold = createAsyncThunk(
+  'products/by_sold',
   async (thunkAPI) => {
     const config = {
       headers: {

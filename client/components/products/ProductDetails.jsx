@@ -43,14 +43,14 @@ const ProductDetails = ({ product }) => {
               <div className="space-x-2 overflow-auto text-center whitespace-nowrap">
                 {product?.images?.map(img => (
                   <a
-                    key={img.id}
+                    key={img?.id}
                     className="inline-block border border-gray-200 p-1 rounded-md hover:border-blue-500 cursor-pointer"
-                    onClick={() => setImgPreview(img.image)}
+                    onClick={() => setImgPreview(img?.image)}
                   >
                     <img
                       className="w-14 h-14"
                       src={img.image || '/images/default_product.png'}
-                      alt={img.name}
+                      alt={img?.name}
                       width="500"
                       height="500"
                     />

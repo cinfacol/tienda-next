@@ -9,8 +9,8 @@ class ImgProductAdmin(admin.TabularInline):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "advert_type", "product_type", "cover_photo"]
-    list_filter = ["advert_type", "product_type"]
+    list_display = ["title", "advert_type", "product_type", "sold", "date_created"]
+    list_filter = ["advert_type", "product_type", "sold", "date_created"]
     inlines = [ImgProductAdmin]
 
     def cover_photo(self, obj):

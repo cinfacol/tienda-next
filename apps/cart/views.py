@@ -1,9 +1,9 @@
-from apps.products.serializers import ProductSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.products.models import Product
+from apps.products.serializers import ProductsSerializer
 
 from .models import Cart, CartItem
 
@@ -24,7 +24,7 @@ class GetItemsView(APIView):
                     item["id"] = cart_item.id
                     item["count"] = cart_item.count
                     product = Product.objects.get(id=cart_item.product.id)
-                    product = ProductSerializer(product)
+                    product = ProductsSerializer(product)
 
                     item["product"] = product.data
 
@@ -86,7 +86,7 @@ class AddItemView(APIView):
                         item["id"] = cart_item.id
                         item["count"] = cart_item.count
                         product = Product.objects.get(id=cart_item.product.id)
-                        product = ProductSerializer(product)
+                        product = ProductsSerializer(product)
 
                         item["product"] = product.data
 
@@ -205,7 +205,7 @@ class UpdateItemView(APIView):
                     item["id"] = cart_item.id
                     item["count"] = cart_item.count
                     product = Product.objects.get(id=cart_item.product.id)
-                    product = ProductSerializer(product)
+                    product = ProductsSerializer(product)
 
                     item["product"] = product.data
 
@@ -271,7 +271,7 @@ class RemoveItemView(APIView):
                     item["id"] = cart_item.id
                     item["count"] = cart_item.count
                     product = Product.objects.get(id=cart_item.product.id)
-                    product = ProductSerializer(product)
+                    product = ProductsSerializer(product)
 
                     item["product"] = product.data
 

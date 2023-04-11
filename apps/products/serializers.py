@@ -28,7 +28,7 @@ class ImgProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class ProductsSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     profile_photo = serializers.SerializerMethodField()
     reviews = ReviewsProductSerializer(
@@ -60,8 +60,10 @@ class ProductSerializer(serializers.ModelSerializer):
             "cover_photo",
             "images",
             "published_status",
+            "date_created",
             "views",
             "reviews",
+            "get_thumbnail",
         ]
 
     def get_user(self, obj):

@@ -8,6 +8,7 @@ import { MinusSmallIcon, PlusSmallIcon, MagnifyingGlassIcon } from '@heroicons/r
 import ProductCard from '@/components/products/ProductCard';
 import { prices } from '@/helpers/fixedPrices';
 import BreadCrumbs from '@/components/layouts/BreadCrumbs';
+import { GetFilteredProducts } from '../redux/features/products/productsService';
 
 export default function Shop() {
 
@@ -15,7 +16,7 @@ export default function Shop() {
 
   const products = useSelector(state => state.products.products);
   const filtered_products = useSelector(state => state.products.filtered_products);
-  const filtered_no_products = useSelector(state => state.products.error);
+  // const filtered_no_products = useSelector(state => state.products.error);
   const categories = useSelector(state => state.categories.categories);
 
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -46,40 +47,15 @@ export default function Shop() {
     let results = []
     let display = []
 
-    if (
-      filtered_products &&
-      filtered_products !== null &&
-      filtered_products !== undefined &&
-      filtered
-    ) {
-      filtered_products.map((product, index) => {
-        return display.push(
-          <div key={index}>
-            <ProductCard product={product} />
-          </div>
-        );
-      });
-    } else if (
-      !filtered &&
-      products &&
-      products !== null &&
-      products !== undefined
-    ) {
-      products.map((product, index) => {
-        return display.push(
-          <div key={index}>
-            <ProductCard product={product} />
-          </div>
-        );
-      });
-    } else {
-      return (
-        <div >
-          <h1>{filtered_no_products}</h1>
-      </div>
-      )
+    const show = filtered ? filtered_products : products;
 
-    }
+    show?.map((product, index) => {
+      return display.push(
+        <div key={index}>
+          <ProductCard product={product} />
+        </div>
+      );
+    })
 
     for (let i = 0; i < display.length; i += 3) {
       results.push(
@@ -355,62 +331,57 @@ export default function Shop() {
                   <h3 className="sr-only">Categories</h3>
                   <ul className="text-sm font-medium text-gray-900 space-y-4 pb-6 border-b border-gray-200">
                     {
-                      categories &&
-                      categories !== null &&
-                      categories !== undefined && (
-                        categories.map(category => {
-                          if (category.sub_categories.length === 0) {
-                            return (
-                              <div key={category.id} className=' flex items-center h-5 my-5'>
-                                <input
-                                  name='category_id'
-                                  onChange={e => onChange(e)}
-                                  value={category.id.toString()}
-                                  type='radio'
-                                  className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
-                                />
-                                <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                  {category.name}
-                                </label>
-                              </div>
-                            )
-                          } else {
-                            let result = []
+                      categories?.map(category => {
+                        if (category?.sub_categories?.length === 0) {
+                          return (
+                            <div key={category?.id} className=' flex items-center h-5 my-5'>
+                              <input
+                                name='category_id'
+                                onChange={e => onChange(e)}
+                                value={category?.id.toString()}
+                                type='radio'
+                                className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
+                              />
+                              <label className="ml-3 min-w-0 flex-1 text-gray-500">
+                                {category?.name}
+                              </label>
+                            </div>
+                          )
+                        } else {
+                          let result = []
+                          result.push(
+                            <div key={category?.id} className='flex items-center h-5'>
+                              <input
+                                name='category_id'
+                                onChange={e => onChange(e)}
+                                value={category?.id.toString()}
+                                type='radio'
+                                className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
+                              />
+                              <label className="ml-3 min-w-0 flex-1 text-gray-500">
+                                {category?.name}
+                              </label>
+                            </div>
+                          )
+                          category?.sub_categories?.map(sub_category => {
                             result.push(
-                              <div key={category.id} className='flex items-center h-5'>
+                              <div key={sub_category?.id} className='flex items-center h-5 ml-2 my-5'>
                                 <input
                                   name='category_id'
                                   onChange={e => onChange(e)}
-                                  value={category.id.toString()}
+                                  value={sub_category?.id.toString()}
                                   type='radio'
                                   className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
                                 />
                                 <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                  {category.name}
+                                  {sub_category?.name}
                                 </label>
                               </div>
                             )
-                            // eslint-disable-next-line array-callback-return
-                            category.sub_categories.map(sub_category => {
-                              result.push(
-                                <div key={sub_category.id} className='flex items-center h-5 ml-2 my-5'>
-                                  <input
-                                    name='category_id'
-                                    onChange={e => onChange(e)}
-                                    value={sub_category.id.toString()}
-                                    type='radio'
-                                    className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
-                                  />
-                                  <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                    {sub_category.name}
-                                  </label>
-                                </div>
-                              )
-                            })
-                            return result
-                          }
-                        })
-                      )
+                          })
+                          return result
+                        }
+                      })
                     }
                   </ul>
 
@@ -431,13 +402,13 @@ export default function Shop() {
                           <Disclosure.Panel className="pt-6">
                             {<div className="space-y-6">
                               {
-                                prices && prices.map((price, index) => {
-                                  if (price.id === 0) {
+                                prices?.map((price, index) => {
+                                  if (price?.id === 0) {
                                     return (
                                       <div key={index} className='form-check'>
                                         <input
                                           onChange={e => onChange(e)}
-                                          value={price.name}
+                                          value={price?.name}
                                           name='price_range'
                                           type='radio'
                                           className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'
@@ -451,7 +422,7 @@ export default function Shop() {
                                       <div key={index} className='form-check'>
                                         <input
                                           onChange={e => onChange(e)}
-                                          value={price.name}
+                                          value={price?.name}
                                           name='price_range'
                                           type='radio'
                                           className='focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded-full'

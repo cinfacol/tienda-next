@@ -1,10 +1,10 @@
-from apps.products.models import Product
-from apps.products.serializers import ProductSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.cart.models import Cart, CartItem
+from apps.products.models import Product
+from apps.products.serializers import ProductsSerializer
 
 from .models import WishList, WishListItem
 
@@ -23,7 +23,7 @@ class GetItemsView(APIView):
                     item = {}
                     item["id"] = wishlist_item.id
                     product = Product.objects.get(id=wishlist_item.product.id)
-                    product = ProductSerializer(product)
+                    product = ProductsSerializer(product)
                     item["product"] = product.data
                     result.append(item)
             return Response({"wishlist": result}, status=status.HTTP_200_OK)
@@ -87,7 +87,7 @@ class AddItemView(APIView):
 
                 item["id"] = wishlist_item.id
                 product = Product.objects.get(id=wishlist_item.product.id)
-                product = ProductSerializer(product)
+                product = ProductsSerializer(product)
 
                 item["product"] = product.data
 
@@ -167,7 +167,7 @@ class RemoveItemView(APIView):
 
                     item["id"] = wishlist_item.id
                     product = Product.objects.get(id=wishlist_item.product.id)
-                    product = ProductSerializer(product)
+                    product = ProductsSerializer(product)
 
                     item["product"] = product.data
 

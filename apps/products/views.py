@@ -15,7 +15,7 @@ from .models import Product, ProductViews
 from .pagination import ProductPagination
 from .serializers import (
     ProductCreateSerializer,
-    ProductSerializer,
+    ProductsSerializer,
     ProductViewSerializer,
 )
 
@@ -42,7 +42,7 @@ class ProductFilter(django_filters.FilterSet):
 
 
 class ListAllProductsAPIView(generics.ListAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductsSerializer
     queryset = Product.objects.all().order_by("-created_at")
     pagination_class = ProductPagination
     filter_backends = [
@@ -57,7 +57,7 @@ class ListAllProductsAPIView(generics.ListAPIView):
 
 
 class ListRelatedAPIView(generics.ListAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductsSerializer
     queryset = Product.objects.all().order_by("-created_at")
     pagination_class = ProductPagination
     filter_backends = [
@@ -115,7 +115,7 @@ class ListRelatedAPIView(generics.ListAPIView):
 
             # Excluir producto que estamos viendo
             related_products = related_products.exclude(id=productId)
-            related_products = ProductSerializer(related_products, many=True)
+            related_products = ProductsSerializer(related_products, many=True)
 
             if len(related_products.data) > 3:
                 return Response(
@@ -140,7 +140,7 @@ class ListRelatedAPIView(generics.ListAPIView):
 
 class ListAgentsProductsAPIView(generics.ListAPIView):
 
-    serializer_class = ProductSerializer
+    serializer_class = ProductsSerializer
     pagination_class = ProductPagination
     filter_backends = [
         DjangoFilterBackend,
@@ -162,44 +162,16 @@ class ProductViewsAPIView(generics.ListAPIView):
     queryset = ProductViews.objects.all()
 
 
-""" class ProductDetailView(APIView):
-    def get(self, request, slug):
-        product = Product.objects.get(slug=slug)
-
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if x_forwarded_for:
-            ip = x_forwarded_for.split(",")[0]
-        else:
-            ip = request.META.get("REMOTE_ADDR")
-
-        if not ProductViews.objects.filter(product=product, ip=ip).exists():
-            ProductViews.objects.create(product=product, ip=ip)
-
-            product.views += 1
-            product.save()
-
-        serializer = ProductSerializer(product, context={"request": request})
-
-        return Response(serializer.data, status=status.HTTP_200_OK) """
-
-
 class ProductDetailView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def get(self, request, productId, format=None):
         product_id = productId
-        """ try:
-            product_id = int(productId)
-        except:
-            return Response(
-                {"error": "Product ID must be an integer"},
-                status=status.HTTP_404_NOT_FOUND,
-            ) """
 
         if Product.objects.filter(id=product_id).exists():
             product = Product.objects.get(id=product_id)
 
-            product = ProductSerializer(product)
+            product = ProductsSerializer(product)
 
             return Response({"product": product.data}, status=status.HTTP_200_OK)
         else:
@@ -225,7 +197,7 @@ def UpdateProductAPIView(request, slug):
         )
     if request.method == "PUT":
         data = request.data
-        serializer = ProductSerializer(product, data, many=False)
+        serializer = ProductsSerializer(product, data, many=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -299,14 +271,6 @@ class ProductSearchAPIView(APIView):
         # product_type = data["product_type"]
         # product_results = product_results.filter(product_type__iexact=product_type)
 
-        """ try:
-            category_id = int(data["category_id"])
-        except:
-            return Response(
-                {"error": "Category ID must be an integer"},
-                status=status.HTTP_404_NOT_FOUND,
-            ) """
-
         category_id = data["category_id"]
 
         price_range = data["price_range"]
@@ -378,7 +342,7 @@ class ProductSearchAPIView(APIView):
         else:
             product_results = product_results.order_by(sort_by)
 
-        product_results = ProductSerializer(product_results, many=True)
+        product_results = ProductsSerializer(product_results, many=True)
 
         if len(product_results.data) > 0:
             return Response(
@@ -390,6 +354,6 @@ class ProductSearchAPIView(APIView):
         # catch_phrase = data["catch_phrase"]
         # queryset = queryset.filter(description__icontains=catch_phrase)
 
-        # serializer = ProductSerializer(queryset, many=True)
+        # serializer = ProductsSerializer(queryset, many=True)
 
         # return Response(serializer.data)

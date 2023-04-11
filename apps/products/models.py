@@ -112,6 +112,7 @@ class Product(TimeStampedUUIDModel):
     def get_thumbnail(self):
         if self.cover_photo:
             return self.cover_photo.url
+        return ""
 
     def __str__(self):
         return self.title
