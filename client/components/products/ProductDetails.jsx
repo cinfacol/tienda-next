@@ -3,6 +3,7 @@
 import React, { useRef } from 'react'
 import StarRatings from 'react-star-ratings';
 import BreadCrumbs from '../layouts/BreadCrumbs';
+import RelatedProducts from './RelatedProducts';
 
 const ProductDetails = ({ product }) => {
   const ratings = product?.reviews.map((review) => {return review.rating});
@@ -106,14 +107,14 @@ const ProductDetails = ({ product }) => {
                   {" "}
                   <b className="font-medium w-36 inline-block">Stock</b>
                   {stock ?
-                    <span className="text-green-500">In Stock</span> :
+                    <span className="text-green-500">In Stock {product?.quantity}</span> :
                     <span className="text-red-500">Out of Stock</span>
                   }
                 </li>
                 <li className="mb-1">
                   {" "}
-                  <b className="font-medium w-36 inline-block">Type:</b>
-                  <span className="text-gray-500">{product?.product_type}</span>
+                  <b className="font-medium w-36 inline-block">Category:</b>
+                  <span className="text-gray-500">{product?.category}</span>
                 </li>
                 <li className="mb-1">
                   {" "}
@@ -125,6 +126,8 @@ const ProductDetails = ({ product }) => {
               </ul>
             </main>
           </div>
+
+          <RelatedProducts productId={product?.id} />
 
           {/* <NewReview /> */}
           <hr />

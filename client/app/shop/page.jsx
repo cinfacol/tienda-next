@@ -504,7 +504,7 @@ export default function Shop() {
 
                 {/* Product grid */}
                 <div className="lg:col-span-4">
-                  {products && showProducts()}
+                  {(products || filtered_products)  && showProducts()}
                 </div>
               </div>
             </section>

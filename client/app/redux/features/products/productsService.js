@@ -37,7 +37,7 @@ export const GetProductsByArrival = createAsyncThunk(
       }
     };
     try {
-      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=date_created&order=desc&limit=3`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=date_created&order=asc&limit=3`, config);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -62,7 +62,7 @@ export const GetProductsBySold = createAsyncThunk(
       }
     };
     try {
-      const res = await authApi.get(`${process.env.API_URL}/api/product/get-products?sortBy=sold&order=desc&limit=3`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/all/?sortBy=sold&order=desc&limit=3`, config);
       if (res.status === 200) {
         return res.data;
       } else {
@@ -103,16 +103,17 @@ export const get_product = createAsyncThunk(
   }
 )
 
-export const get_related_products = createAsyncThunk(
-  'products/get_related_products',
+export const GetRelatedProducts = createAsyncThunk(
+  'products/related',
   async (productId, thunkAPI) => {
     const config = {
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       }
     };
     try {
-      const res = await axios.get(`${process.env.API_URL}/api/product/related/${productId}`, config);
+      const res = await axios.get(`${process.env.API_URL}/api/products/related/${productId}/`, config);
       if (res.status === 200) {
 
         return res.data;

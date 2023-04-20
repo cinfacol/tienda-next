@@ -1,23 +1,24 @@
-import Link from 'next/link';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { GetProductsBySold } from '@/app/redux/features/products/productsService';
+"use client";
+import { useDispatch, useSelector } from "react-redux";
+import { GetRelatedProducts } from "@/app/redux/features/products/productsService";
+import { useEffect } from "react";
+import Link from "next/link";
 
-
-const ProductsSold = () => {
-
-  const data = useSelector(state => state.products.by_sold);
+const RelatedProducts = ({productId}) => {
   const dispatch = useDispatch();
+  const data = useSelector((state) => state.products.related)
+
+  console.log('data', data);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    dispatch(GetProductsBySold());
-  }, []);
+  dispatch(GetRelatedProducts(productId));
+}, [])
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl py-4 px-4 sm:py-6 sm:px-6 lg:max-w-7xl lg:px-8">
         <h2 className="sr-only">Products</h2>
-        <h2 className='text-2xl font-extrabold tracking-tight text-gray-900'>Lo mas vendido</h2>
+        <h2 className='text-2xl font-extrabold tracking-tight text-gray-900'>Productos relacionados</h2>
         <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
           {
             data?.map((product) => (
@@ -25,7 +26,7 @@ const ProductsSold = () => {
                 <Link href={`/products/${product.id}`} className="group">
                   <div className="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 group-hover:opacity-75 xl:aspect-w-7 xl:aspect-h-8">
                     <img
-                      src={product?.cover_photo}
+                      src={`http://127.0.0.1:8000/${product?.get_thumbnail}`}
                       alt={product?.title}
                       className='w-full h-full object-center object-cover lg:w-full lg:h-full'
                     />
@@ -49,4 +50,4 @@ const ProductsSold = () => {
   )
 }
 
-export default ProductsSold;
+export default RelatedProducts

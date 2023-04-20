@@ -5,9 +5,9 @@ from .views import (
     DeleteProductAPIView,
     ListAgentsProductsAPIView,
     ListAllProductsAPIView,
+    ListBySearchView,
     ListRelatedAPIView,
     ProductDetailView,
-    ProductSearchAPIView,
     UpdateProductAPIView,
 )
 
@@ -27,5 +27,5 @@ urlpatterns = [
     ),
     path("update/<productId>/", UpdateProductAPIView, name="update-product"),
     path("delete/<productId>/", DeleteProductAPIView, name="delete-product"),
-    path("by/search/", ProductSearchAPIView.as_view(), name="product-search"),
+    path("by/search/", ListBySearchView.as_view(), name="product-search"),
 ]
